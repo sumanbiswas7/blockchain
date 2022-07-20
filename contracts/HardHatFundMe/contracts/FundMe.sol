@@ -1,37 +1,45 @@
-// SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.8;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.8;
 
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./PriceConverter.sol";
+
+error NotOwner();
 
 contract FundMe {
     using PriceConverter for uint256;
-    mapping(address => uint256) public funders;
-    address public immutable i_owner;
-    uint256 public constant MINIMUM_USD = 10 * 10**18;
-    uint256 public balance = address(this).balance;
 
-    // 20000000000000000 minimum wei
+    uint256 public constant MINIMUM_USD = 50 * 10**18;
+    mapping(address => uint256) public addressToAmountFunded;
 
-    constructor() {
-        i_owner = msg.sender;
+    address public immutable owner;
+    AggregatorV3Interface public priceFeed;
+
+    constructor(address priceFeedAddress) {
+        priceFeed = AggregatorV3Interface(priceFeedAddress);
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        // require(msg.sender == owner);
+        if (msg.sender != owner) revert NotOwner();
+        _;
     }
 
     function fund() public payable {
         require(
-            msg.value.getConversionRate() >= MINIMUM_USD,
-            "You need to send more"
+            msg.value.getConversionRate(priceFeed) >= MINIMUM_USD,
+            "More ETH!"
         );
-        funders[msg.sender] += msg.value;
+        // require(PriceConverter.getConversionRate(msg.value) >= MINIMUM_USD, "You need to spend more ETH!");
+        addressToAmountFunded[owner] += msg.value;
     }
 
-    function withdraw() public payable {
-        require(msg.sender == i_owner, "You can't withdraw");
-        funders[msg.sender] -= msg.value;
-
+    function withdraw() public payable onlyOwner {
+        addressToAmountFunded[owner] = 0;
         // payable(msg.sender).transfer(address(this).balance);
         // bool sendSuccess = payable(msg.sender).send(address(this).balance);
         // require(sendSuccess, "Send failed");
-
         (bool callSuccess, ) = payable(msg.sender).call{
             value: address(this).balance
         }("");

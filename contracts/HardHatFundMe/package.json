@@ -6,10 +6,12 @@
     "hardhat-deploy": "^0.11.11"
   },
   "dependencies": {
-    "@chainlink/contracts": "^0.4.1"
+    "@chainlink/contracts": "^0.4.1",
+    "solhint": "^3.3.7"
   },
   "scripts": {
     "compile": "npx hardhat compile",
+    "solhint": "npx solhint contracts/*.sol",
     "deploy": "npx hardhat deploy",
     "deployOld": "npx hardhat run scripts/deploy.js"
   }
