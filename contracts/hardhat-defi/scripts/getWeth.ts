@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
-const AMOUNT = ethers.utils.parseEther("0.02");
+export const AMOUNT = ethers.utils.parseEther("0.02");
 
-export async function getWeth(deployer: string) {
+export async function getWeth(deployer: any) {
     // Get the abi and contractAddress to interact 
     // 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
 
@@ -12,4 +12,3 @@ export async function getWeth(deployer: string) {
 
     console.log(`Got ${wethBalance.toString()} WETH`)
 }
-
