@@ -16,6 +16,6 @@ const deployFunction: DeployFunction = async ({ getNamedAccounts, deployments })
     console.log("---------------------------------------")
 }
 
-deployFunction.tags = ["all", "basic-nft"]
+deployFunction.tags = ["all", "basic"]
 export default deployFunction;
 
