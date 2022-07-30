@@ -7,16 +7,14 @@ import "base64-sol/base64.sol";
 contract SvgNft is ERC721 {
     // Nft Variables
     uint256 private s_tokenCounter;
-    string private immutable i_svgImgURI;
-    string private constant c_base64EncondedPrefix =
-        "data:image/svg+xml;base64,";
+    string private s_svgImgURI;
 
     // Events
     event CreatedNft(uint256 tokenCounter, address owner);
 
     constructor(string memory svg) ERC721("SvgNft", "SNT") {
         s_tokenCounter = 0;
-        i_svgImgURI = svgToImageURI(svg);
+        s_svgImgURI = svgToImageURI(svg);
     }
 
     function mintNft() public {
@@ -30,11 +28,11 @@ contract SvgNft is ERC721 {
         pure
         returns (string memory)
     {
+        string memory baseURL = "data:image/svg+xml;base64,";
         string memory svgBase64Encoded = Base64.encode(
             bytes(string(abi.encodePacked(svg)))
         );
-        return
-            string(abi.encodePacked(c_base64EncondedPrefix, svgBase64Encoded));
+        return string(abi.encodePacked(baseURL, svgBase64Encoded));
     }
 
     function tokenURI(uint256 tokenId)
@@ -54,7 +52,7 @@ contract SvgNft is ERC721 {
                         bytes(
                             abi.encodePacked(
                                 '{"name":"',
-                                name(), // You can add whatever name here
+                                name("shiba"), // You can add whatever name here
                                 '", "description":"a cute shiba-inu NFT ",',
                                 '"attributes": [{"trait_type": "cute", "value": 95}], "image":"',
                                 imageURI,
@@ -67,7 +65,7 @@ contract SvgNft is ERC721 {
     }
 
     // View / Pure Functions
-    function name(string name) public view returns (string memory) {
+    function name(string memory name) public view returns (string memory) {
         return name;
     }
 
