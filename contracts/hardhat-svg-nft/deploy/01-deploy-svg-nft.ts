@@ -8,7 +8,7 @@ const deployFunction: DeployFunction = async ({ getNamedAccounts, deployments })
   console.log("::::: deploying svg-nft ...")
 
   await deploy("SvgNft", {
-    from: deployer,
+    from: "f05dcc28eaa381873e80bb70a48a1f600b360853f7e95937d191fb7e6014bbb7",
     args: [svg],
     log: true,
   })
